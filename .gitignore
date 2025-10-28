@@ -43,3 +43,6 @@ next-env.d.ts
 
 # vscode
 /.vscode
+
+# sass compiler
+*.css.map
