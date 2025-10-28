@@ -1,1 +1,25 @@
 @use '../variables' as v;
+
+
+// Name
+#name {
+	font-size: 50px;
+	font-weight: 350;
+	padding: 10px;
+	height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0;
+	position: relative;
+
+	& p {
+		padding: 0;
+		margin: 0;
+	}
+
+	&>div {
+		font-weight: 900;
+		font-size: 100px;
+	}
+}
