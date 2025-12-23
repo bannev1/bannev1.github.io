@@ -67,7 +67,7 @@ $(window).on('load',() => {
 
 	$("#contact-form").on("submit", function() {
 		$.ajax({
-			url: "https://formspree.io/f/xbjbrwnj", 
+			url: "https://formspree.io/f/xojaybdn", 
 			method: "POST",
 			dataType: "json",
 			data: {
