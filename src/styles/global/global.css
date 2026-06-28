@@ -1,1 +1,15 @@
-/*# sourceMappingURL=global.css.map */
+@font-face {
+  font-family: "ApeOut";
+  src: url("/fonts/apeout.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+* {
+  font-family: "ApeOut";
+}
+
+html,
+body {
+  background-color: "#FFEBBB";
+}/*# sourceMappingURL=global.css.map */

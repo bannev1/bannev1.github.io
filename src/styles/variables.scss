@@ -9,4 +9,10 @@ $black: '#414439';
 $basic-shadow: 14px 10px 21px -6px rgba(0,0,0,0.18);
 
 // Font
-@import '@/fonts/apeout.ttf';
+@font-face {
+	font-family: 'ApeOut';
+	src: url('/fonts/apeout.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
