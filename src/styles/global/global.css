@@ -1,15 +1,16 @@
 @font-face {
-  font-family: "ApeOut";
+  font-family: "Ape Out";
   src: url("/fonts/apeout.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 * {
-  font-family: "ApeOut";
+  font-family: "Ape Out";
 }
 
 html,
 body {
   background-color: "#FFEBBB";
+  margin: 0;
 }/*# sourceMappingURL=global.css.map */

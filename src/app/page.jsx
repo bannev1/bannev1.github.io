@@ -34,7 +34,17 @@ export default function Home() {
 	]);
 
 	useLayoutEffect(() => {
-		const ctx = gsap.context(() => {
+		let ctx;
+
+		// The intro measures real layout (getBoundingClientRect) to figure
+		// out where to start the animation from. If "Ape Out" is still
+		// loading when that measurement happens, the browser is rendering
+		// with a fallback font, the metrics are wrong, and everything
+		// visibly snaps into a different spot the instant the real font
+		// swaps in mid-animation — that's the "funky"/"pieces aren't in
+		// the right place" jank. Wait for fonts before doing anything.
+		const start = () => {
+		ctx = gsap.context(() => {
 		const reduceMotion = window.matchMedia(
 			'(prefers-reduced-motion: reduce)'
 		).matches;
@@ -72,8 +82,11 @@ export default function Home() {
 		gsap.set(navLinks, { autoAlpha: 0, y: 16 });
 
 		// Measure the natural (final, CSS-driven) position of the two
-		// name halves so we can compute where "combined + centered +
-		// unrotated" would sit, then jump them there before the reveal.
+		// name groups (each is the h1/p wrapper — it carries the
+		// triangles as children, so animating it moves the text AND
+		// its triangle backdrop together as one rigid piece) so we can
+		// compute where "combined + centered + unrotated" would sit,
+		// then jump them there before the reveal.
 		const nameRotation = getCurrentRotation(valentinaRef.current);
 		const vRect = valentinaRef.current.getBoundingClientRect();
 		const bRect = bannerRef.current.getBoundingClientRect();
@@ -120,8 +133,15 @@ export default function Home() {
 			'-=0.4'
 			);
 		}, containerRef);
+		};
 
-		return () => ctx.revert();
+		if (document.fonts && document.fonts.ready) {
+			document.fonts.ready.then(start);
+		} else {
+			start();
+		}
+
+		return () => ctx && ctx.revert();
 	}, []);
 
 	// Playful per-letter hover punch for each nav word.
@@ -188,11 +208,15 @@ export default function Home() {
 			</ul>
 		</nav>
 
-		<h1 className="landing__name landing__name--first" ref={valentinaRef}>
-			Valentina
+		<h1 className="landing__mark landing__mark--first" ref={valentinaRef}>
+			<span className="landing__triangle landing__triangle--dark" aria-hidden="true" />
+			<span className="landing__triangle landing__triangle--light" aria-hidden="true" />
+			<span className="landing__name">Valentina</span>
 		</h1>
-		<p className="landing__name landing__name--last" ref={bannerRef}>
-			Banner
+		<p className="landing__mark landing__mark--last" ref={bannerRef}>
+			<span className="landing__triangle landing__triangle--dark" aria-hidden="true" />
+			<span className="landing__triangle landing__triangle--light" aria-hidden="true" />
+			<span className="landing__name">Banner</span>
 		</p>
 		</main>
 	);

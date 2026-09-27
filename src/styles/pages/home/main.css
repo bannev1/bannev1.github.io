@@ -8,9 +8,12 @@
 :root {
   --color-bg: #2c4a45;
   --color-bg-dark: #22403b;
+  --color-teal-light: #3f6a60;
   --color-cream: #ede4c7;
   --color-orange: #e2792e;
   --color-ink: #1c1c1c;
+  --stripe-angle: -7deg;
+  --nav-tilt: -4deg;
 }
 
 .landing {
@@ -19,16 +22,8 @@
   height: 100vh;
   min-height: 560px;
   overflow: hidden;
-  background: var(--color-bg);
   isolation: isolate;
-}
-.landing::after {
-  content: "";
-  position: absolute;
-  inset: clamp(10px, 2vw, 28px);
-  border: 2px solid rgba(0, 0, 0, 0.55);
-  pointer-events: none;
-  z-index: 5;
+  background: var(--color-bg);
 }
 
 .landing__grunge {
@@ -37,7 +32,7 @@
   z-index: 4;
   pointer-events: none;
   mix-blend-mode: overlay;
-  opacity: 0.5;
+  opacity: 0.65;
   background-repeat: repeat;
   background-size: 480px 480px;
 }
@@ -57,7 +52,7 @@
   width: 120%;
   height: clamp(70px, 12vh, 120px);
   background: var(--color-bg-dark);
-  transform: rotate(-7deg);
+  transform: rotate(var(--stripe-angle));
   transform-origin: left center;
   z-index: 1;
 }
@@ -69,7 +64,7 @@
   width: 120%;
   height: clamp(80px, 14vh, 140px);
   background: var(--color-cream);
-  transform: translateY(-50%) rotate(-7deg);
+  transform: translateY(-50%) rotate(var(--stripe-angle));
   transform-origin: left center;
   z-index: 2;
   display: flex;
@@ -82,7 +77,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 8%;
+  padding: 0 11vw;
   margin: 0;
   list-style: none;
 }
@@ -97,11 +92,12 @@
   overflow: hidden;
   text-decoration: none;
   font-family: "Ape Out", "Arial Narrow Bold", "Helvetica Neue", sans-serif;
-  font-size: clamp(1.1rem, 2.6vw, 2rem);
+  font-size: clamp(1.4rem, 3.6vw, 2.9rem);
   letter-spacing: 0.02em;
   color: var(--color-ink);
   cursor: pointer;
-  padding: 0.15em 0.1em;
+  padding: 0.1em 0.08em;
+  transform: rotate(var(--nav-tilt));
 }
 
 .landing__nav-swipe {
@@ -118,49 +114,84 @@
   will-change: transform;
 }
 
-.landing__name {
+.landing__mark {
   position: absolute;
+  z-index: 3;
+}
+
+.landing__mark--first {
+  top: calc(50% - 15vh);
+  left: 6%;
+  transform: rotate(var(--stripe-angle));
+  transform-origin: left center;
+}
+
+.landing__mark--last {
+  top: calc(50% + 5vh);
+  right: 6%;
+  transform: rotate(var(--stripe-angle));
+  transform-origin: right center;
+}
+
+.landing__triangle {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 38vw;
+  height: 30vh;
+}
+.landing__triangle--dark {
+  background: var(--color-bg-dark);
+  clip-path: polygon(0 100%, 0 0, 100% 100%);
+}
+.landing__triangle--light {
+  background: var(--color-teal-light);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.landing__mark--first .landing__triangle {
+  left: -3vw;
+  bottom: -6vh;
+}
+
+.landing__mark--last .landing__triangle {
+  right: -3vw;
+  top: -6vh;
+}
+
+.landing__name {
+  position: relative;
+  z-index: 1;
+  display: block;
   margin: 0;
   font-family: "Ape Out", "Arial Narrow Bold", "Helvetica Neue", sans-serif;
   color: var(--color-orange);
   font-weight: normal;
   line-height: 0.9;
   white-space: nowrap;
-  z-index: 3;
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-}
-.landing__name--first {
-  top: 10%;
-  left: 6%;
-  font-size: clamp(2.4rem, 8vw, 6rem);
-  transform: rotate(-7deg);
-  transform-origin: left center;
-}
-.landing__name--last {
-  bottom: 8%;
-  right: 6%;
-  font-size: clamp(2.4rem, 8vw, 6rem);
-  transform: rotate(-7deg);
-  transform-origin: right center;
+  font-size: clamp(3rem, 11vmin, 8.5rem);
 }
 
 @media (max-width: 640px) {
-  .landing__name--first,
-  .landing__name--last {
-    font-size: clamp(1.8rem, 11vw, 3rem);
+  :root {
+    --stripe-angle: -5deg;
   }
-  .landing__band--dark,
-  .landing__stripe {
-    transform: rotate(-5deg);
+  .landing__mark--first {
+    top: calc(50% - 11vh);
   }
-  .landing__stripe {
-    transform: translateY(-50%) rotate(-5deg);
+  .landing__mark--last {
+    top: calc(50% + 4vh);
+  }
+  .landing__triangle {
+    width: 55vw;
+    height: 20vh;
   }
   .landing__nav-list {
-    padding: 0 5%;
+    padding: 0 11vw;
   }
   .landing__nav-link {
-    font-size: clamp(0.85rem, 4.2vw, 1.2rem);
+    font-size: clamp(0.85rem, 4.4vw, 1.3rem);
   }
 }
 @media (prefers-reduced-motion: reduce) {
