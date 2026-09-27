@@ -8,29 +8,49 @@
   --color-orange: #e2792e;
   --color-ink: #1c1c1c;
   --stripe-angle: -7deg;
-  // Nav words all tilt the SAME direction as the stripe — no more
-  // per-word alternating jitter.
   --nav-tilt: -4deg;
 }
 
-// Full-bleed, no scroll. No outer margin/border by design — if you
-// want the poster-style frame back, re-add a &::after with
-// inset + border here.
+// Three equal rows, zero gap between them, full viewport — this IS
+// the layout now, not a decorative diagonal floating over a flat
+// background. Grid guarantees no gap structurally: 33.33vh each,
+// stacked with nothing between.
 .landing {
   position: relative;
-  width: 100%;
   height: 100vh;
   min-height: 560px;
   overflow: hidden;
   isolation: isolate;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.landing__third {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.landing__third--name-first {
   background: var(--color-bg);
+  justify-content: flex-start;
+  padding-left: 5%;
+}
+
+.landing__third--nav {
+  background: var(--color-cream);
+  justify-content: center;
+}
+
+.landing__third--name-last {
+  background: var(--color-bg);
+  justify-content: flex-end;
+  padding-right: 5%;
 }
 
 // ---------------------------------------------------------------
-// Grunge texture — two procedural noise layers that slowly
-// crossfade (see page.jsx). Swap the background-image on each
-// for your real texture #1 / texture #2 PNGs if you have them:
-//   background-image: url('../../assets/textures/grunge-1.png');
+// Grunge texture — spans the whole page, above all three rows
 // ---------------------------------------------------------------
 .landing__grunge {
   position: absolute;
@@ -43,43 +63,14 @@
   background-size: 480px 480px;
 
   &--a {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   &--b {
-	opacity: 0;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-	background-size: 520px 520px;
+    opacity: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 520px 520px;
   }
-}
-
-// Darker echo band right behind the cream stripe, for depth
-.landing__band--dark {
-  position: absolute;
-  left: -10%;
-  top: 44%;
-  width: 120%;
-  height: clamp(70px, 12vh, 120px);
-  background: var(--color-bg-dark);
-  transform: rotate(var(--stripe-angle));
-  transform-origin: left center;
-  z-index: 1;
-}
-
-// Cream diagonal nav stripe
-.landing__stripe {
-  position: absolute;
-  left: -10%;
-  top: 50%;
-  width: 120%;
-  height: clamp(80px, 14vh, 140px);
-  background: var(--color-cream);
-  transform: translateY(-50%) rotate(var(--stripe-angle));
-  transform-origin: left center;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .landing__nav-list {
@@ -87,12 +78,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  // -10vw is the stripe's own overhang (left:-10%, width:120%) — this
-  // padding has to clear that before it means anything as visual
-  // inset, so it can't go much below ~11vw without "About" bleeding
-  // off the left edge again. Kept tight (not 16vw like before) so the
-  // words read bigger/denser per the maximalist brief.
-  padding: 0 11vw;
+  padding: 0 8%;
   margin: 0;
   list-style: none;
 }
@@ -107,12 +93,14 @@
   overflow: hidden;
   text-decoration: none;
   font-family: v.$font-display;
-  // Bigger + tighter padding = the stripe reads full, not sparse.
-  font-size: clamp(1.4rem, 3.6vw, 2.9rem);
+  // Scales against both width AND height of the nav row so it fills
+  // the full third instead of sitting small in a lot of cream space.
+  font-size: clamp(1.6rem, min(4.2vw, 7vh), 3.4rem);
   letter-spacing: 0.02em;
   color: var(--color-ink);
   cursor: pointer;
   padding: 0.1em 0.08em;
+  // Same direction as the name tilt — no more alternating jitter.
   transform: rotate(var(--nav-tilt));
 }
 
@@ -135,59 +123,44 @@
 // overlapping triangle wedges (dark + light teal) behind the word.
 // GSAP animates the WRAPPER, so the triangles travel with the text
 // as a single rigid piece during the intro, joining with the other
-// mark's triangles+text in the middle before splitting apart to
-// reveal the nav stripe.
+// mark's triangles+text in the middle before splitting apart into
+// their own third.
 // ---------------------------------------------------------------
 .landing__mark {
-  position: absolute;
-  z-index: 3;
-}
-
-.landing__mark--first {
-  // Anchored close to the stripe's centerline (50%) on purpose —
-  // minimal gap, not a big empty band between the name and the nav.
-  top: calc(50% - 15vh);
-  left: 6%;
+  position: relative;
+  z-index: 1;
   transform: rotate(var(--stripe-angle));
-  transform-origin: left center;
-}
-
-.landing__mark--last {
-  top: calc(50% + 5vh);
-  right: 6%;
-  transform: rotate(var(--stripe-angle));
-  transform-origin: right center;
 }
 
 // The two wedges fully overlap the same box; each clip-path keeps
 // only its own triangular half, so together they form one
-// diagonally-split rectangle — a dark triangle and a light one.
+// diagonally-split rectangle sized to fill most of the row's height.
 .landing__triangle {
   position: absolute;
   z-index: 0;
   pointer-events: none;
-  width: 38vw;
-  height: 30vh;
+  width: 40vw;
+  height: 28vh;
 
   &--dark {
-	background: var(--color-bg-dark);
-	clip-path: polygon(0 100%, 0 0, 100% 100%);
+    background: var(--color-bg-dark);
+    clip-path: polygon(0 100%, 0 0, 100% 100%);
   }
 
   &--light {
-	background: var(--color-teal-light);
-	clip-path: polygon(0 0, 100% 0, 100% 100%);
+    background: var(--color-teal-light);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
   }
 }
 
-.landing__mark--first .landing__triangle {
+.landing__third--name-first .landing__triangle {
   left: -3vw;
-  bottom: -6vh;
+  bottom: -4vh;
 }
 
-.landing__mark--last .landing__triangle {
+.landing__third--name-last .landing__triangle {
   right: -3vw;
-  top: -6vh;
+  top: -4vh;
 }
 
 .landing__name {
@@ -201,45 +174,38 @@
   line-height: 0.9;
   white-space: nowrap;
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-  // Big + fills the frame — clamped against vmin so it can't blow
-  // past the edges on an unusually tall or wide window.
-  font-size: clamp(3rem, 11vmin, 8.5rem);
+  // Scales against the row's own height (~1/3 of viewport) so it
+  // fills its third instead of being sized off the whole page.
+  font-size: clamp(3rem, 20vh, 9rem);
 }
 
 // ---------------------------------------------------------------
-// Small screens — flatten the rotation a touch, shrink the
-// triangles, and keep the nav clear of the edges
+// Small screens — flatten the rotation, shrink the triangles
 // ---------------------------------------------------------------
 @media (max-width: 640px) {
   :root {
-	--stripe-angle: -5deg;
-  }
-
-  .landing__mark--first {
-	top: calc(50% - 11vh);
-  }
-
-  .landing__mark--last {
-	top: calc(50% + 4vh);
+    --stripe-angle: -5deg;
   }
 
   .landing__triangle {
-	width: 55vw;
-	height: 20vh;
+    width: 58vw;
+    height: 20vh;
+  }
+
+  .landing__third--name-first,
+  .landing__third--name-last {
+    padding-left: 6%;
+    padding-right: 6%;
   }
 
   .landing__nav-list {
-	padding: 0 11vw;
-  }
-
-  .landing__nav-link {
-	font-size: clamp(0.85rem, 4.4vw, 1.3rem);
+    padding: 0 6%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .landing__grunge--a,
   .landing__grunge--b {
-	animation: none;
+    animation: none;
   }
 }

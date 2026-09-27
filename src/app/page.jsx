@@ -18,8 +18,7 @@ function getCurrentRotation(el) {
 
 export default function Home() {
 	const containerRef = useRef(null);
-	const bgLayerRef = useRef(null); // darkest diagonal band (parallax far layer)
-	const stripeRef = useRef(null); // cream nav stripe (parallax mid layer)
+	const stripeRef = useRef(null); // the middle third (nav row)
 	const valentinaRef = useRef(null);
 	const bannerRef = useRef(null);
 	const navListRef = useRef(null);
@@ -27,8 +26,6 @@ export default function Home() {
 	const grungeBRef = useRef(null);
 
 	useMouseParallax([
-		{ ref: bgLayerRef, depth: 28 },
-		{ ref: stripeRef, depth: 16 },
 		{ ref: valentinaRef, depth: 10 },
 		{ ref: bannerRef, depth: 10 },
 	]);
@@ -75,18 +72,15 @@ export default function Home() {
 		if (reduceMotion) return;
 
 		// Hide the reveal pieces before we measure/animate anything
-		gsap.set([stripeRef.current, bgLayerRef.current], {
-			scaleX: 0,
-			transformOrigin: 'left center',
-		});
+		gsap.set(stripeRef.current, { scaleX: 0, transformOrigin: 'left center' });
 		gsap.set(navLinks, { autoAlpha: 0, y: 16 });
 
 		// Measure the natural (final, CSS-driven) position of the two
-		// name groups (each is the h1/p wrapper — it carries the
-		// triangles as children, so animating it moves the text AND
-		// its triangle backdrop together as one rigid piece) so we can
-		// compute where "combined + centered + unrotated" would sit,
-		// then jump them there before the reveal.
+		// name groups (each .landing__mark carries its two triangles as
+		// children, so animating it moves the text AND its triangle
+		// backdrop together as one rigid piece) so we can compute where
+		// "combined + centered + unrotated" would sit, then jump them
+		// there before the reveal.
 		const nameRotation = getCurrentRotation(valentinaRef.current);
 		const vRect = valentinaRef.current.getBoundingClientRect();
 		const bRect = bannerRef.current.getBoundingClientRect();
@@ -117,7 +111,7 @@ export default function Home() {
 			duration: 1.3,
 		})
 			.to(
-			[bgLayerRef.current, stripeRef.current],
+			stripeRef.current,
 			{ scaleX: 1, duration: 1, ease: 'power4.out' },
 			'-=0.9'
 			)
@@ -184,9 +178,15 @@ export default function Home() {
 		<div className="landing__grunge landing__grunge--a" ref={grungeARef} />
 		<div className="landing__grunge landing__grunge--b" ref={grungeBRef} />
 
-		<div className="landing__band landing__band--dark" ref={bgLayerRef} />
+		<div className="landing__third landing__third--name-first">
+			<h1 className="landing__mark" ref={valentinaRef}>
+			<span className="landing__triangle landing__triangle--dark" aria-hidden="true" />
+			<span className="landing__triangle landing__triangle--light" aria-hidden="true" />
+			<span className="landing__name">Valentina</span>
+			</h1>
+		</div>
 
-		<nav className="landing__stripe" ref={stripeRef}>
+		<nav className="landing__third landing__third--nav" ref={stripeRef}>
 			<ul className="landing__nav-list" ref={navListRef}>
 			{NAV_ITEMS.map((label) => (
 				<li key={label} className="landing__nav-item">
@@ -208,16 +208,13 @@ export default function Home() {
 			</ul>
 		</nav>
 
-		<h1 className="landing__mark landing__mark--first" ref={valentinaRef}>
-			<span className="landing__triangle landing__triangle--dark" aria-hidden="true" />
-			<span className="landing__triangle landing__triangle--light" aria-hidden="true" />
-			<span className="landing__name">Valentina</span>
-		</h1>
-		<p className="landing__mark landing__mark--last" ref={bannerRef}>
+		<div className="landing__third landing__third--name-last">
+			<p className="landing__mark" ref={bannerRef}>
 			<span className="landing__triangle landing__triangle--dark" aria-hidden="true" />
 			<span className="landing__triangle landing__triangle--light" aria-hidden="true" />
 			<span className="landing__name">Banner</span>
-		</p>
+			</p>
+		</div>
 		</main>
 	);
 }
