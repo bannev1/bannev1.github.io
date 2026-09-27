@@ -1,5 +1,10 @@
-@use '../../variables' as v;
-
+@font-face {
+  font-family: "Ape Out";
+  src: url("/fonts/apeout.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   --color-bg: #2c4a45;
   --color-bg-dark: #22403b;
@@ -16,24 +21,16 @@
   overflow: hidden;
   background: var(--color-bg);
   isolation: isolate;
-
-  // subtle inner frame, matches the boxed-poster look of the reference
-  &::after {
-    content: '';
-    position: absolute;
-    inset: clamp(10px, 2vw, 28px);
-    border: 2px solid rgba(0, 0, 0, 0.55);
-    pointer-events: none;
-    z-index: 5;
-  }
+}
+.landing::after {
+  content: "";
+  position: absolute;
+  inset: clamp(10px, 2vw, 28px);
+  border: 2px solid rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  z-index: 5;
 }
 
-// ---------------------------------------------------------------
-// Grunge texture — two procedural noise layers that slowly
-// crossfade (see Header.jsx). Swap the background-image on each
-// for your real texture #1 / texture #2 PNGs if you have them:
-//   background-image: url('../../assets/textures/grunge-1.png');
-// ---------------------------------------------------------------
 .landing__grunge {
   position: absolute;
   inset: 0;
@@ -43,19 +40,16 @@
   opacity: 0.5;
   background-repeat: repeat;
   background-size: 480px 480px;
-
-  &--a {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  &--b {
-    opacity: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 520px 520px;
-  }
+}
+.landing__grunge--a {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.landing__grunge--b {
+  opacity: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 520px 520px;
 }
 
-// Darker diagonal band sitting behind the cream nav stripe
 .landing__band--dark {
   position: absolute;
   left: -10%;
@@ -68,7 +62,6 @@
   z-index: 1;
 }
 
-// Cream diagonal nav stripe
 .landing__stripe {
   position: absolute;
   left: -10%;
@@ -103,7 +96,7 @@
   display: inline-flex;
   overflow: hidden;
   text-decoration: none;
-  font-family: v.$font-display;
+  font-family: "Ape Out", "Arial Narrow Bold", "Helvetica Neue", sans-serif;
   font-size: clamp(1.1rem, 2.6vw, 2rem);
   letter-spacing: 0.02em;
   color: var(--color-ink);
@@ -125,68 +118,54 @@
   will-change: transform;
 }
 
-// ---------------------------------------------------------------
-// Name halves
-// ---------------------------------------------------------------
 .landing__name {
   position: absolute;
   margin: 0;
-  font-family: v.$font-display;
+  font-family: "Ape Out", "Arial Narrow Bold", "Helvetica Neue", sans-serif;
   color: var(--color-orange);
   font-weight: normal;
   line-height: 0.9;
   white-space: nowrap;
   z-index: 3;
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-
-  &--first {
-    top: 10%;
-    left: 6%;
-    font-size: clamp(2.4rem, 8vw, 6rem);
-    transform: rotate(-7deg);
-    transform-origin: left center;
-  }
-
-  &--last {
-    bottom: 8%;
-    right: 6%;
-    font-size: clamp(2.4rem, 8vw, 6rem);
-    transform: rotate(-7deg);
-    transform-origin: right center;
-  }
+}
+.landing__name--first {
+  top: 10%;
+  left: 6%;
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  transform: rotate(-7deg);
+  transform-origin: left center;
+}
+.landing__name--last {
+  bottom: 8%;
+  right: 6%;
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  transform: rotate(-7deg);
+  transform-origin: right center;
 }
 
-// ---------------------------------------------------------------
-// Small screens — flatten the rotation a touch and stack nav
-// tighter so nothing clips off the viewport edges
-// ---------------------------------------------------------------
 @media (max-width: 640px) {
   .landing__name--first,
   .landing__name--last {
     font-size: clamp(1.8rem, 11vw, 3rem);
   }
-
   .landing__band--dark,
   .landing__stripe {
     transform: rotate(-5deg);
   }
-
   .landing__stripe {
     transform: translateY(-50%) rotate(-5deg);
   }
-
   .landing__nav-list {
     padding: 0 5%;
   }
-
   .landing__nav-link {
     font-size: clamp(0.85rem, 4.2vw, 1.2rem);
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .landing__grunge--a,
   .landing__grunge--b {
     animation: none;
   }
-}
+}/*# sourceMappingURL=main.css.map */

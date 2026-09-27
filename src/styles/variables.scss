@@ -10,9 +10,11 @@ $basic-shadow: 14px 10px 21px -6px rgba(0,0,0,0.18);
 
 // Font
 @font-face {
-	font-family: 'ApeOut';
+	font-family: 'Ape Out';
 	src: url('/fonts/apeout.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
 }
+ 
+$font-display: 'Ape Out', 'Arial Narrow Bold', 'Helvetica Neue', sans-serif;
