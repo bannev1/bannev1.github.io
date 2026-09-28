@@ -1,0 +1,179 @@
+// ─────────── Tokens: faded, sun-aged print colours ───────────
+$paper: #e9dfc8;
+$paper-lt: #f1e9d5;
+$ink: #2a2420;
+$red: #b5382d;
+$blue: #2b4577;
+$green: #2f6f5e;
+$gold: #c79a33;
+
+$zh: var(--f-serif), 'Songti SC', 'Noto Serif CJK SC', serif;
+$sans: var(--f-sans), system-ui, sans-serif;
+$display: var(--f-display), 'Arial Narrow', sans-serif;
+
+$sm: 600px;
+$md: 1000px;
+$lg: 1200px;
+@mixin up($w) { @media (min-width: $w) { @content; } }
+
+// ─────────── Grunge textures (SVG noise, generated in the browser, no image files) ───────────
+// Fine paper grain
+$grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .09 1.5 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+// Large soft stains and foxing
+$stains: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .012' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 2.4 0 0 0 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+// Worn-ink mask: punches tiny holes in big type so it looks printed, not typed
+$wear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3 0 0 0 2.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+// 窗花 window lattice
+$lattice: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='%232f6f5e' stroke-width='1.5'%3E%3Cpath d='M0 20h40M20 0v40'/%3E%3Crect x='14' y='14' width='12' height='12' fill='%232f6f5e' transform='rotate(45 20 20)'/%3E%3Cpath d='M0 8h8V0M32 0v8h8M40 32h-8v8M8 40v-8H0'/%3E%3C/g%3E%3C/svg%3E");
+
+:root { --pad: clamp(1rem, 4vw, 3.5rem); }
+
+// ─────────── Base ───────────
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; } // gutter stops the page jumping when scroll is locked
+body {
+  background: $paper; color: $ink; font-family: $sans; line-height: 1.7; min-height: 100dvh; overflow-x: hidden;
+  // Two fixed texture layers above everything. No blend modes, so scrolling stays smooth.
+  &::before, &::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1001; }
+  &::before { background: $grain; opacity: 0.5; }
+  &::after { background: $stains; background-size: 900px 900px; opacity: 0.4; }
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid $blue; outline-offset: 3px; }
+.zh { font-family: $zh; font-weight: 700; }
+.worn { -webkit-mask-image: $wear; mask-image: $wear; -webkit-mask-size: 360px 360px; mask-size: 360px 360px; }
+.split { display: inline-flex; }
+.ch-wrap { display: inline-block; overflow: hidden; padding: 0.1em 0.04em; margin: -0.1em -0.04em; }
+.ch { display: inline-block; backface-visibility: hidden; }
+section[id] { scroll-margin-top: 3.4rem; }
+.section { padding: clamp(4rem, 10vw, 8rem) var(--pad); position: relative; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+// ─────────── Loader ───────────
+.loader {
+  position: fixed; inset: 0; z-index: 1000; background: $blue; color: $paper-lt; display: grid; place-items: center; padding: var(--pad);
+  &__frame { visibility: hidden; text-align: center; width: min(100%, 34rem); padding: clamp(2rem, 6vw, 3.5rem) 1.5rem; outline: 1px solid rgba($paper-lt, 0.7); outline-offset: -8px; border: 1px solid rgba($paper-lt, 0.7); }
+  &__zh { font-size: clamp(3rem, 14vw, 7.5rem); line-height: 1.1; justify-content: center; font-weight: 700; }
+  &__meter { height: 1px; background: rgba($paper-lt, 0.3); margin: 1.2rem auto 0; width: 70%; }
+  &__rule { display: block; height: 100%; background: $paper-lt; }
+  &__num { font-family: $display; font-weight: 500; font-size: 1.4rem; letter-spacing: 0.15em; margin-top: 0.8rem; }
+}
+
+// ─────────── Nav ───────────
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50; background: $paper; border-bottom: 1px solid $ink;
+  &__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem var(--pad); position: relative; z-index: 2; }
+  &__logo { font-size: 1.3rem; color: $red; line-height: 1; }
+  &__links { display: none; gap: 0.3rem; @include up($md) { display: flex; }
+    a { display: flex; align-items: baseline; gap: 0.4rem; padding: 0.25rem 0.8rem; transition: color 0.25s, background 0.25s;
+      b { font-size: 1.05rem; } span { font-size: 0.8rem; opacity: 0.7; }
+      &:hover { color: $red; background: rgba($red, 0.08); } } }
+  &__burger { font-size: 0.9rem; padding: 0.3rem 0.9rem; border: 1px solid $ink; @include up($md) { display: none; } }
+  &__bar { height: 2px; background: $red; transform: scaleX(0); transform-origin: 0 50%; position: relative; z-index: 2; margin-bottom: -1px; }
+}
+.menu {
+  position: fixed; inset: 0; z-index: 1; background: $blue; color: $paper-lt; padding: 5.5rem var(--pad) 2rem;
+  display: flex; flex-direction: column; justify-content: center; clip-path: inset(0 0 100% 0);
+  visibility: hidden; transition: visibility 0s 0.6s;
+  &.is-open { visibility: visible; transition-delay: 0s; }
+  a { display: flex; justify-content: space-between; align-items: baseline; font-size: clamp(3rem, 14vw, 5.5rem); line-height: 1.25; border-bottom: 1px solid rgba($paper-lt, 0.35);
+    small { font-family: $sans; font-weight: 400; font-size: 1rem; } }
+}
+
+// ─────────── Hero ───────────
+.hero {
+  position: relative; min-height: 100svh; padding: 5.2rem var(--pad) 2rem; display: flex; flex-direction: column; overflow: hidden;
+  &::before { content: ''; position: absolute; inset: 0; background: $lattice; opacity: 0.06; pointer-events: none; }
+  &__top { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-block: 1px solid $ink; font-size: 0.9rem; position: relative; }
+  &__stage { flex: 1; display: grid; gap: 2.5rem; align-content: center; padding: 2rem 0; position: relative; @include up($md) { grid-template-columns: 1fr auto; align-items: center; } }
+  &__title { display: flex; flex-direction: column; gap: 0.8rem; }
+  &__big { display: block; font-size: clamp(4.5rem, 19vw, 14rem); line-height: 1.05; color: $red; letter-spacing: 0.02em; will-change: transform;
+    .ch { text-shadow: 0.03em 0.02em 0 rgba($blue, 0.3); } } // slight mis-registration, like a two-colour print
+  &__en { font-family: $display; font-weight: 500; font-size: clamp(1.4rem, 5vw, 3rem); letter-spacing: 0.12em; color: $blue; flex-wrap: wrap; line-height: 1.1; }
+  &__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-right: 5.5rem; position: relative; }
+  &__ticket { border: 1px dashed $ink; padding: 0.35rem 1.1rem; font-size: 0.9rem; }
+  &__cue { font-size: 0.9rem; border-bottom: 1px solid $red; padding-bottom: 0.1rem; color: $red; }
+  &__stamp { position: absolute; right: var(--pad); bottom: 1.6rem; width: 4rem; height: 4rem; display: grid; place-items: center; font-size: 1.15rem; color: $red; border: 2px solid $red; border-radius: 50%; transform: rotate(-10deg); opacity: 0.85; }
+  &__cal { justify-self: start; @include up($md) { justify-self: end; margin-right: 2vw; } }
+}
+// Tear-off calendar (shows today's date)
+.cal { 
+  &__sheet { position: relative; width: clamp(10.5rem, 26vw, 15rem); background: $paper-lt; border: 1px solid $ink; padding: 2.1rem 1rem 1rem; text-align: center; box-shadow: 0 18px 26px -18px rgba($ink, 0.55); }
+  &__rings { position: absolute; top: 0.6rem; left: 0; right: 0; display: flex; justify-content: space-around; padding-inline: 0.8rem;
+    i { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: $paper; border: 1px solid $ink; } }
+  &__month { font-size: 1.15rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba($ink, 0.3); }
+  &__day { font-family: $display; font-weight: 600; font-size: clamp(4.5rem, 11vw, 7.5rem); line-height: 1.05; color: $red; }
+  &__week { font-size: 1.2rem; }
+  &__note { font-size: 0.8rem; margin-top: 0.7rem; padding-top: 0.5rem; border-top: 1px dashed rgba($ink, 0.5); opacity: 0.8; }
+}
+
+// ─────────── Marquee & lattice ───────────
+.marquee { overflow: hidden; border-block: 1px solid $ink; padding: 0.45rem 0; white-space: nowrap; background: $paper-lt;
+  &--red { color: $red; }
+  &--blue { background: $blue; color: $paper-lt; border-color: $blue; }
+  &__track { display: flex; width: max-content; will-change: transform; }
+  &__group { display: flex; flex-shrink: 0;
+    span { font-size: clamp(1.1rem, 2.6vw, 1.6rem); display: flex; align-items: center; }
+    b { font-size: 0.45em; margin: 0 1.5rem; color: $gold; } }
+}
+.lattice { position: relative; overflow: hidden; height: clamp(2.6rem, 7vw, 4.2rem); background: $paper-lt; border-block: 1px solid $green;
+  &__inner { position: absolute; top: 0; bottom: 0; left: 0; right: -160px; background: $lattice; opacity: 0.8; will-change: transform; } }
+
+// ─────────── Section heading ───────────
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem 1.5rem; margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  &__zh { display: block; font-size: clamp(4rem, 13vw, 8.5rem); line-height: 1.05; color: $red; }
+  &__en { font-family: $display; font-weight: 500; font-size: clamp(1rem, 2.2vw, 1.3rem); letter-spacing: 0.14em; color: $blue; border-bottom: 1px solid $blue; padding-bottom: 0.1rem; margin-bottom: 0.9rem; }
+}
+
+// ─────────── Work ───────────
+.work__grid { display: grid; gap: clamp(1.2rem, 3vw, 2rem); grid-template-columns: 1fr;
+  @include up($sm) { grid-template-columns: repeat(2, 1fr); }
+  @include up($lg) { grid-template-columns: repeat(12, 1fr);
+    .cell:nth-child(1), .cell:nth-child(4) { grid-column: span 7; }
+    .cell:nth-child(2), .cell:nth-child(3) { grid-column: span 5; } } }
+.cell { display: flex; }
+.card { --accent: #{$red}; position: relative; flex: 1; background: $paper-lt; border: 1px solid $ink; outline: 1px solid rgba($ink, 0.35); outline-offset: -6px; min-height: clamp(17rem, 40vw, 25rem);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  &::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--accent); }
+  &--blue { --accent: #{$blue}; } &--green { --accent: #{$green}; } &--gold { --accent: #{$gold}; }
+  a { display: flex; flex-direction: column; justify-content: flex-end; gap: 1.4rem; height: 100%; padding: clamp(1.4rem, 3vw, 2rem); position: relative; overflow: hidden; }
+  &:hover, &:focus-within { transform: translateY(-4px); box-shadow: 0 20px 28px -20px rgba($ink, 0.55); }
+  &__zh { position: absolute; top: -0.05em; right: 0.05em; font-size: clamp(9rem, 22vw, 15rem); line-height: 1; color: var(--accent); opacity: 0.16; user-select: none; }
+  &__title { font-family: $display; font-weight: 600; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: 0.04em; line-height: 1.1; }
+  &__blurb { max-width: 34ch; margin-top: 0.4rem; }
+  &__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+  &__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; li { border: 1px solid var(--accent); color: var(--accent); padding: 0.05rem 0.7rem; font-size: 0.85rem; } }
+  &__arrow { font-size: 1.6rem; line-height: 1; color: var(--accent); transition: transform 0.4s; }
+  &:hover &__arrow { transform: translateX(6px); }
+}
+
+// ─────────── About ───────────
+.almanac { border: 1px solid $red; outline: 1px solid rgba($red, 0.5); outline-offset: 5px; background: $paper-lt; color: $red;
+  &__head { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.7rem 1.2rem; border-bottom: 1px solid $red; font-size: 0.95rem; }
+  &__grid { display: grid; grid-template-columns: 1fr; @include up($md) { grid-template-columns: 1fr 1.7fr 1fr; } }
+  &__cell { padding: clamp(1.2rem, 3vw, 2rem); border-top: 1px solid rgba($red, 0.5); &:first-child { border-top: 0; }
+    @include up($md) { border-top: 0; & + & { border-left: 1px solid rgba($red, 0.5); } }
+    h3 { font-size: clamp(2.6rem, 6vw, 3.8rem); line-height: 1.1; text-align: center; margin-bottom: 0.8rem; }
+    li { padding: 0.4rem 0; border-bottom: 1px dashed rgba($red, 0.4); } }
+  &__cell--bio { color: $ink; display: flex; flex-direction: column; gap: 1rem; p { max-width: 62ch; } }
+}
+.stats { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba($ink, 0.4);
+  dt { font-family: $display; font-weight: 600; font-size: clamp(2.2rem, 5vw, 3.2rem); line-height: 1.1; color: $blue; } dd { font-size: 0.9rem; } }
+.skills { display: grid; gap: 2rem; margin-top: clamp(2.5rem, 6vw, 4rem); grid-template-columns: 1fr; @include up($sm) { grid-template-columns: repeat(3, 1fr); }
+  &__col { h3 { font-size: 1.15rem; color: $green; border-bottom: 1px solid $green; padding-bottom: 0.4rem; margin-bottom: 0.5rem; }
+    li { padding: 0.35rem 0; border-bottom: 1px solid rgba($ink, 0.15); } } }
+
+// ─────────── Contact ───────────
+.contact { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; overflow: hidden;
+  &__zh { display: block; font-size: clamp(4.5rem, 18vw, 13rem); line-height: 1.05; color: $red; }
+  &__lead { max-width: 40ch; font-size: 1.1rem; }
+  &__mail { display: inline-block; font-family: $display; font-weight: 500; font-size: clamp(1.2rem, 4.4vw, 2.6rem); letter-spacing: 0.06em; padding: 0.6rem 1.4rem; border: 1px solid $ink; outline: 1px solid rgba($ink, 0.45); outline-offset: 5px; word-break: break-word; transition: background 0.35s, color 0.35s;
+    &:hover { background: $ink; color: $paper-lt; } }
+  &__list { width: min(100%, 40rem); margin-top: 1.5rem; text-align: left;
+    a { display: flex; align-items: baseline; gap: 1rem; padding: 0.9rem 0.3rem; border-bottom: 1px solid rgba($ink, 0.35); transition: padding 0.35s, color 0.35s;
+      span { font-size: 1.4rem; color: $red; } b { flex: 1; font-weight: 500; } i { font-style: normal; }
+      &:hover { padding-inline: 1rem; color: $blue; } } }
+  &__foot { margin-top: 2rem; font-size: 0.85rem; opacity: 0.75; }
+}
